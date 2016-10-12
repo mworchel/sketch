@@ -1,2 +1,2 @@
 # sketch
-Small physics playground for simulating forces on rigid bodies
+Small physics playground simulating forces on rigid bodies
