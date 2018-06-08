@@ -14,6 +14,6 @@ public:
 	void run();
 
 private:
-	sf::RenderWindow _window;
-	std::unique_ptr<world> _world;
+	sf::RenderWindow m_window;
+	world            m_world;
 };

@@ -9,53 +9,52 @@
 
 using namespace std::chrono;
 
-const int width = 320;
-const int height = 240;
-
+constexpr const int width = 320;
+constexpr const int height = 240;
 constexpr const auto simulation_time_step = 16ms;
 
 application::application()
-	: _window(sf::VideoMode(width, height), "MyApp") {
-	_world = std::make_unique<world>(width, height);
+	: m_window(sf::VideoMode(width, height), "Sketch")
+  , m_world(width, height) {
 }
 
 application::~application() {}
 
 void application::run() {
-	// Create balls
+	// Create initial set of balls
 	std::vector<std::shared_ptr<ball>> balls;
 	balls.push_back(std::make_shared<ball>(13.0f, 13.0f, 10.0f));
 	balls.push_back(std::make_shared<ball>(45.0f, 13.0f, 5.0f));
 
 	// Add balls to the world
 	for (const auto& ball : balls) {
-		_world->add_ball(ball);
+		m_world.add_ball(ball);
 	}
 
-	// Add a gravity force to the world
+	// Add forces to the world
 	auto gravity = std::make_shared<gravity_force>(true);
-	_world->add_force_provider(gravity);
+	m_world.add_force_provider(gravity);
 	auto wind = std::make_shared<wind_force>();
-	_world->add_force_provider(wind);
+	m_world.add_force_provider(wind);
 	auto friction = std::make_shared<friction_force>(true);
-	_world->add_force_provider(friction);
+	m_world.add_force_provider(friction);
 	auto attractor = std::make_shared<point_attractor_force>();
-	_world->add_force_provider(attractor);
+	m_world.add_force_provider(attractor);
 
 	std::chrono::high_resolution_clock timer;
 	auto last_time = timer.now();
 	auto accumulated_time = 0ns;
-	while (_window.isOpen()) {
+	while (m_window.isOpen()) {
 		sf::Event ev;
-		while (_window.pollEvent(ev)) {
+		while (m_window.pollEvent(ev)) {
 			if (ev.type == sf::Event::Closed) {
-				_window.close();
+				m_window.close();
 			}
 			if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-				auto mouse_position = sf::Mouse::getPosition(_window);
+				auto mouse_position = sf::Mouse::getPosition(m_window);
 				auto b = std::make_shared<ball>(static_cast<float>(mouse_position.x), static_cast<float>(mouse_position.y), static_cast<float>((rand() + 1) % 20));
 				balls.push_back(b);
-				_world->add_ball(b);
+				m_world.add_ball(b);
 			}
 			if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Right) {
 				attractor->is_active() = true;
@@ -64,7 +63,7 @@ void application::run() {
 				attractor->is_active() = false;
 			}
 			if (ev.type == sf::Event::MouseMoved) {
-				auto mouse_position = sf::Mouse::getPosition(_window);
+				auto mouse_position = sf::Mouse::getPosition(m_window);
 				attractor->point().x = mouse_position.x;
 				attractor->point().y = mouse_position.y;
 			}
@@ -87,16 +86,16 @@ void application::run() {
 
 		accumulated_time += elapsed;
 		while (accumulated_time >= simulation_time_step) {
-			_world->update(duration_cast<duration<float>>(simulation_time_step).count());
+			m_world.update(duration_cast<duration<float>>(simulation_time_step).count());
 			accumulated_time -= simulation_time_step;
 		}
 
-		_window.clear();
+		m_window.clear();
 
 		for (const auto& ball : balls) {
-			_window.draw(*ball);
+			m_window.draw(*ball);
 		}
 
-		_window.display();
+		m_window.display();
 	}
 }

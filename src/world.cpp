@@ -6,50 +6,52 @@
 const float gravity = 0.00981f;// 9.81f;
 
 world::world(int width, int height)
-	: _width(width), _height(height) {}
+	: m_width(width), m_height(height) {}
 
 world::~world() {}
 
 void world::update(float dt) {
-	// Add forces to each object
-	for (const auto& ball : _balls) {
-		for (const auto& force_provider : _force_providers) {
-			ball->_acceleration += dt*force_provider->value(*ball);
+	// Add forces to all the balls
+	for (auto& ball : m_balls) {
+		for (const auto& force_provider : m_force_providers) {
+			ball->acceleration() += dt * force_provider->value(*ball);
 		}
-		ball->_acceleration /= ball->mass();
+		ball->acceleration() /= ball->mass();
 	}
 
+  // Enforce balls to stay in our small constraint rectangular world
+	for (auto& ball : m_balls) {
+    auto& position = ball->position();
+    auto& velocity = ball->velocity();
+    float const radius = ball->radius();
 
-	for (const auto& ball : _balls) {
-		if (ball->_position.x < 0){ 
-			ball->_position.x = 0;
-			ball->_velocity.x = - ball->_velocity.x;
+		if (position.x - radius < 0){
+			position.x = radius;
+			velocity.x = - velocity.x;
 		}
-		if (ball->_position.x > _width) {
-			ball->_position.x = _width;
-			ball->_velocity.x = -ball->_velocity.x;
+		if (position.x + radius > m_width) {
+			position.x = m_width - radius;
+			velocity.x = -velocity.x;
 		}
-		if (ball->_position.y > _height) {
-			ball->_position.y = _height;
-			ball->_velocity.y = -ball->_velocity.y;
+		if (position.y + radius > m_height) {
+			position.y = m_height - radius;
+			velocity.y = - velocity.y;
 		}
-		if (ball->_position.y < 0) {
-			ball->_position.y = 0;
-			ball->_velocity.y = -ball->_velocity.y;
+		if (position.y - radius < 0) {
+			position.y = radius;
+			velocity.y = -velocity.y;
 		}
 	}
 
-	for (const auto& ball : _balls) {
+	for (auto& ball : m_balls) {
 		ball->update();
-		ball->_acceleration = sf::Vector2f();
-		ball->_angular_acceleration = 0.0f;
 	}
 }
 
 void world::add_ball(const std::shared_ptr<ball>& b) {
-	_balls.push_back(b);
+	m_balls.push_back(b);
 }
 
 void world::add_force_provider(const std::shared_ptr<force>& force) {
-	_force_providers.push_back(force);
+	m_force_providers.push_back(force);
 }

@@ -15,11 +15,11 @@ public:
 	void update(float dt);
 
 	inline int width() const {
-		return _width;
+		return m_width;
 	}
 
 	inline int height() const {
-		return _height;
+		return m_height;
 	}
 
 	void add_ball(const std::shared_ptr<ball>& ball);
@@ -27,8 +27,8 @@ public:
 	void add_force_provider(const std::shared_ptr<force>& force);
 
 private:
-	int _width;
-	int _height;
-	std::vector<std::shared_ptr<ball>> _balls;
-	std::vector<std::shared_ptr<force>> _force_providers;
+	int                                 m_width;
+	int                                 m_height;
+	std::vector<std::shared_ptr<ball>>  m_balls;
+	std::vector<std::shared_ptr<force>> m_force_providers;
 };

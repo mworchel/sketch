@@ -1,19 +1,18 @@
 #include "ball.hpp"
 
+#include <algorithm>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 ball::ball(float x, float y, float mass)
-	: _mass(mass), _position(x, y), _angle(0), _angular_velocity(0), _angular_acceleration(0) {}
+	: m_mass(mass), m_position(x, y) {}
 
 ball::~ball() {}
 
 void ball::draw(sf::RenderTarget & target, sf::RenderStates states) const {
-	float rad = _mass;
-	auto circle = sf::CircleShape(rad);
-	//auto circle = sf::RectangleShape(sf::Vector2f(rad*2,rad*2));
-	circle.setOrigin(rad,rad);
-	//circle.setRotation((_angle * 180) / M_PI);
-	circle.setPosition(_position);
+	auto circle = sf::CircleShape(radius());
+	circle.setOrigin(radius(), radius());
+	circle.setPosition(m_position);
+  circle.setFillColor(sf::Color(std::min(255.f, radius() * 20.f), std::min(255.f, radius() * 10.f), std::min(255.f, radius() * 5.f)));
 	target.draw(circle, states);
 }

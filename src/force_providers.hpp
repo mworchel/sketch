@@ -58,11 +58,11 @@ public:
 	inline point_attractor_force(bool is_active) : activatable_force(is_active) {}
 
 	inline sf::Vector2f& point() {
-		return _point;
+		return m_point;
 	}
 
 	inline sf::Vector2f active_value(const ball& ball) const override {
-		auto direction = _point - ball.position();
+		auto direction = m_point - ball.position();
 		float mag = sf::math::magnitude(direction);
 
 		if (mag < 5.0f) {
@@ -79,6 +79,6 @@ public:
 	}
 
 private:
-	sf::Vector2f _point;
+	sf::Vector2f m_point;
 };
 

@@ -12,33 +12,49 @@ public:
 	virtual ~ball();
 
 	inline void update() {
-		_velocity += _acceleration;
-		_position += _velocity;
-
-		//_angular_velocity += _angular_acceleration;
-		//_angle += _angular_velocity;
+		m_velocity += m_acceleration;
+		m_position += m_velocity;
+    m_acceleration = { 0.f, 0.f };
 	}
+
+  inline float mass() const
+  {
+    return m_mass;
+  }
 
 	inline sf::Vector2f position() const {
-		return _position;
+		return m_position;
 	}
+
+  inline sf::Vector2f& position()
+  {
+    return m_position;
+  }
 
 	inline sf::Vector2f velocity() const {
-		return _velocity;
+		return m_velocity;
 	}
 
-	inline float mass() const {
-		return _mass;
-	}
+  inline sf::Vector2f& velocity()
+  {
+    return m_velocity;
+  }
+
+  inline sf::Vector2f& acceleration()
+  {
+    return m_acceleration;
+  }
+
+  inline float radius() const
+  {
+    return m_mass;
+  }
 
 private:
-	float _mass;
-	sf::Vector2<float> _position;
-	sf::Vector2<float> _velocity;
-	sf::Vector2<float> _acceleration;
-	float _angle;
-	float _angular_velocity;
-	float _angular_acceleration;
+	float        m_mass;
+	sf::Vector2f m_position;
+	sf::Vector2f m_velocity;
+	sf::Vector2f m_acceleration;
 
 	// Inherited via Drawable
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;

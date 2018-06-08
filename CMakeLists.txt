@@ -16,8 +16,6 @@ list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/main.cpp")
 list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/vector_helper.hpp")
 list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/world.cpp")
 list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/world.hpp")
-list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/world_connector.cpp")
-list(APPEND APP_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/world_connector.hpp")
 
 add_executable(${APP_NAME} ${APP_SOURCE_FILES})
 
